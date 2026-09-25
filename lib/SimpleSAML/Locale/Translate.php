@@ -12,12 +12,14 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Locale;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 use Gettext\BaseTranslator;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
 use SimpleSAML\Module;
 
-class Translate
+class Translate implements TranslatorInterface
 {
     /**
      * The configuration to be used for this translator.
@@ -455,6 +457,16 @@ class Translate
             $_SERVER['PHP_SELF'] . ' - Translate: Could not find dictionary file at [' . $filename . ']'
         );
         return [];
+    }
+
+    public function trans($id, array $parameters = [], $domain = null, $locale = null): string
+    {
+        return self::translateSingularGettext($id, $parameters);
+    }
+
+    public function getLocale(): string
+    {
+        return Language::FALLBACKLANGUAGE;
     }
 
     /**

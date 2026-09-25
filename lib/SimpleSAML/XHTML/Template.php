@@ -17,9 +17,8 @@ use SimpleSAML\Locale\Localization;
 use SimpleSAML\Locale\Translate;
 use SimpleSAML\Logger;
 use SimpleSAML\Module;
-use SimpleSAML\TwigConfigurableI18n\Twig\Environment as Twig_Environment;
-use SimpleSAML\TwigConfigurableI18n\Twig\Extensions\Extension\I18n as Twig_Extensions_Extension_I18n;
 use SimpleSAML\Utils;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFilter;
@@ -314,13 +313,10 @@ class Template extends Response
             'auto_reload' => $auto_reload,
             'cache' => $cache,
             'strict_variables' => true,
-            'translation_function' => [Translate::class, 'translateSingularGettext'],
-            'translation_function_plural' => [Translate::class, 'translatePluralGettext'],
         ];
 
-        $twig = new Twig_Environment($loader, $options);
-        $twig->addExtension(new Twig_Extensions_Extension_I18n());
-        $twig->addExtension(new \Twig\Extensions\DateExtension());
+        $twig = new \Twig\Environment($loader, $options);
+        $twig->addExtension(new TranslationExtension($this->translator));
 
         $twig->addFunction(new TwigFunction('moduleURL', [Module::class, 'getModuleURL']));
 
